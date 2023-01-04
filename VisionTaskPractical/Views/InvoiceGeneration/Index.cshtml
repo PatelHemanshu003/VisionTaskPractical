@@ -1,0 +1,243 @@
+﻿@model  VisionTaskPractical.Models.InvoiceGenerationModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("SubmitData", "InvoiceGeneration", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Invoice Generation</h4>
+        <hr />
+        <div id="criteria-card">
+            <div class="form">
+                <div class="form-body form-group skin skin-flat">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.InvoiceNo, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.InvoiceNo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                @Html.HiddenFor(model => model.InvoiceNo)
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.BillingAddress, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.BillingAddress, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.BillingStateId, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.BillingStateId, (IEnumerable<SelectListItem>)ViewBag.StateId, new { @class = "form-control DropDown", @Onchange = "GetCityListBilling(this)" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.BillingCityId, htmlAttributes: new { @class = "control-label DropDown" })
+                                <select class="form-control" id="BillingCityId" name="BillingCityId">
+                                    <option>--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.BillingPhoneNo, htmlAttributes: new { @class = "control-label" })
+
+                                @Html.EditorFor(model => model.BillingPhoneNo, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ShippingAddress, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.ShippingAddress, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ShippingStateId, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.ShippingStateId, (IEnumerable<SelectListItem>)ViewBag.StateId, new { @class = "form-control DropDown", @Onchange = "GetCityListFotShippping(this)" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ShippingCityId, htmlAttributes: new { @class = "control-label" })
+                                <select class="form-control DropDown" id="ShippingCityId" name="ShippingCityId">
+                                    <option>--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ShippingPhoneNo, htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.ShippingPhoneNo, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="tblMultipleProduct" class="table table-xs table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>ProductName</th>
+                                            <th>Qty</th>
+                                            <th>Rate</th>
+                                            <th>Amount</th>
+                                            <th>Add/Minus</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.lstInvoiceGenerationDetailModel.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DropDownListFor(model => model.lstInvoiceGenerationDetailModel[i].ProductId, (IEnumerable<SelectListItem>)ViewBag.lstProduct, new { @class = "form-control DropDown", @value = Model.lstInvoiceGenerationDetailModel[i].ProductId })
+                                                </td>
+                                                <td>
+                                                    @Html.EditorFor(model => model.lstInvoiceGenerationDetailModel[i].Qty, new { htmlAttributes = new { @class = "form-control" } })
+                                                </td>
+                                                <td>
+                                                    @Html.EditorFor(model => model.lstInvoiceGenerationDetailModel[i].Rate, new { htmlAttributes = new { @class = "form-control" } })
+                                                </td>
+                                                <td>
+                                                    @Html.EditorFor(model => model.lstInvoiceGenerationDetailModel[i].Amount, new { htmlAttributes = new { @class = "form-control" } })
+                                                </td>
+                                                <td>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                    <input type="reset" value="Reset" class="btn btn-danger" />
+                                </div>
+                            </div>
+                        </div>
+                        <h4>Invoice No Showing List</h4>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group right">
+                                    <table id="tblInvoiceList" class="table table-xs table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Invoice No</th>
+                                                <th>Edit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for (int i = 0; i < Model.lstinvoiceGenerationInvoiceLists.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Model.lstinvoiceGenerationInvoiceLists[i].InvoiceNo
+                                                        @Html.HiddenFor(model => model.lstinvoiceGenerationInvoiceLists[i].InvoiceNo)
+                                                    </td>
+                                                    <td>
+                                                        @Html.ActionLink("Edit", "GetEditBillDetails", new { Invoiceno = @Model.lstinvoiceGenerationInvoiceLists[i].InvoiceNo })
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            AddRemoveButtonReInitialize();
+            $(".DropDown").val(function () { return $(this).attr('value') }).trigger('change');
+            if ($("#BillingStateId").val() != "") {
+                GetCityListBilling($("#BillingStateId"));
+            }
+            if ($("#ShippingStateId").val() != "") {
+                GetCityListFotShippping($("#ShippingStateId"));
+            }
+        });
+        function AddRemoveButtonReInitialize() {
+            $("#tblMultipleProduct>tbody>tr td:last-child").html("<i class='la ft-x-square text-danger' id='imgBtnRemoveRow'></i>");
+            if ($("#tblMultipleProduct>tbody>tr").length == 1) {
+                $("#tblMultipleProduct>tbody>tr:first td:last-child").html("<span class='glyphicon glyphicon-plus' id='imgBtnAddRow'></span>");
+            } else {
+                $("#tblMultipleProduct>tbody>tr:last td:last-child").html("<span class='glyphicon glyphicon-minus' id='imgBtnRemoveRow'></span>&nbsp;&nbsp" +
+                    "<span class='glyphicon glyphicon-plus' id='imgBtnAddRow'></span>");
+            }
+        }
+        $(document).on("click", "[id^='imgBtnAddRow']", AddRouteDetailsRow);
+        $(document).on("click", "[id^='imgBtnRemoveRow']", RemoveRouteDetailsRow);
+        function AddRouteDetailsRow(e) {
+            var nextIndex = $("table#tblMultipleProduct tbody tr").length;
+            $.ajax({
+                url: "AddNewRow",
+                type: 'POST',
+                data: { id: nextIndex },
+                success: function (results) {
+                    $("#tblMultipleProduct tbody").append(results);
+                    AddRemoveButtonReInitialize();
+                }
+            });
+            return false;
+        }
+        function RemoveRouteDetailsRow(e) {
+            e.preventDefault();
+            $(this).closest("tr").remove();
+            AddRemoveButtonReInitialize();
+        }
+        function GetCityListBilling(a) {
+            var StateId = a.value;
+            if (StateId == undefined) {
+                StateId = a.val();
+            }
+            var v;
+            $.ajax({
+                url: "GetCiyList",
+                type: 'POST',
+                data: { StateId: StateId },
+                success: function (results) {
+                    $.each(results, function (i, v1) {
+                        v += "<option value=" + v1.ID + ">" + v1.Name + "</option>";
+                    });
+                    $("#BillingCityId").html(v);
+                }
+            });
+            return false;
+        }
+        function GetCityListFotShippping(a) {
+            var StateId = a.value;
+            if (StateId == undefined) {
+                StateId = a.val();
+            }
+            var v;
+            $.ajax({
+                url: "GetCiyList",
+                type: 'POST',
+                data: { StateId: StateId },
+                success: function (results) {
+                    $.each(results, function (i, v1) {
+                        v += "<option value=" + v1.ID + ">" + v1.Name + "</option>";
+                    });
+                    $("#ShippingCityId").html(v);
+                }
+            });
+            return false;
+        }
+    </script>
+}
+

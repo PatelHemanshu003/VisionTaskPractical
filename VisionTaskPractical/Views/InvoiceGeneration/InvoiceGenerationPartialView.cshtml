@@ -1,0 +1,21 @@
+﻿@model  VisionTaskPractical.Models.InvoiceGenerationDetailModel
+
+<tr>
+    <td>
+        @Html.DropDownListFor(model => model.ProductId, (IEnumerable<SelectListItem>)ViewBag.lstProduct, new { @class = "form-control" })
+        @Html.HiddenFor(model => model.ProductId, htmlAttributes: new { @id = "CustomerCode" })
+    </td>
+    <td>
+        @Html.EditorFor(model => model.Qty, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Qty, "", new { @class = "text-danger" })
+    </td>
+    <td>
+        @Html.EditorFor(model => model.Rate, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Rate, "", new { @class = "text-danger" })
+    </td>
+    <td>
+        @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Rate, "", new { @class = "text-danger" })
+    </td>
+    <td></td>
+</tr>
